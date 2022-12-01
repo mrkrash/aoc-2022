@@ -15,6 +15,7 @@ jobs:
                   userId: ${{ secrets.AOC_USER_ID }}
                   sessionCookie: ${{ secrets.AOC_SESSION }}
                   year: 2022
+                  leaderboardId: ${{ secrets.AOC_LEADERBOARD_ID }}
             - uses: stefanzweifel/git-auto-commit-action@v4
               with:
                   commit_message: "update readme progess"
