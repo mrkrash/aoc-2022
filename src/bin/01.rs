@@ -20,22 +20,35 @@ pub fn part_two(input: &str) -> Option<u32> {
     for line in input.lines() {
         if line.trim().is_empty() {
             first_three.sort();
-            if this_elv > first_three[0] {
-                first_three[0] = this_elv;
-            } else if this_elv > first_three[1] {
-                first_three[0] = first_three[1];
-                first_three[1] = this_elv;
-            } else if this_elv > first_three[2] {
+
+            if this_elv > first_three[2] {
                 first_three[0] = first_three[1];
                 first_three[1] = first_three[2];
                 first_three[2] = this_elv;
+            } else if this_elv > first_three[1] {
+                first_three[0] = first_three[1];
+                first_three[1] = this_elv;
+            } else if this_elv > first_three[0] {
+                first_three[0] = this_elv;
             }
             this_elv = 0;
         } else {
             this_elv += line.parse::<i32>().unwrap();
         }
+
+        println!("{} - {} - [{} |{}| {}]", this_elv, line, first_three[0], first_three[1], first_three[2]);
     }
 
+    if this_elv > first_three[2] {
+        first_three[0] = first_three[1];
+        first_three[1] = first_three[2];
+        first_three[2] = this_elv;
+    } else if this_elv > first_three[1] {
+        first_three[0] = first_three[1];
+        first_three[1] = this_elv;
+    } else if this_elv > first_three[0] {
+        first_three[0] = this_elv;
+    }
     Some(first_three.iter().sum::<i32>() as u32)
 }
 
