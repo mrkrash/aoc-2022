@@ -17,7 +17,7 @@ pub fn full_overlap(pairs: &str) -> i32 {
     let (pair_one, pair_two) = get_pair(pairs);
     if (pair_one[0] >= pair_two[0] && pair_one[1] <= pair_two[1]) ||
         (pair_two[0] >= pair_one[0] && pair_two[1] <= pair_one[1]) {
-        return 1 as i32;
+        return 1_i32;
     }
     0
 }
@@ -27,7 +27,7 @@ pub fn pair_overlap(pairs: &str) -> i32 {
         (pair_one[1] >= pair_two[0] && pair_one[1] <= pair_two[1]) ||
         (pair_one[0] >= pair_two[0] && pair_one[1] <= pair_two[1]) ||
         (pair_two[0] >= pair_one[0] && pair_two[1] <= pair_one[1]) {
-        return 1 as i32;
+        return 1_i32;
     }
     0
 }
@@ -41,7 +41,7 @@ pub fn get_pair(pairs: &str) -> (Vec<i8>, Vec<i8>) {
         .map(|limit| limit.parse::<i8>().unwrap())
         .collect::<Vec<i8>>();
 
-    return (pair_one, pair_two);
+    (pair_one, pair_two)
 }
 
 fn main() {
