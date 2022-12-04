@@ -35,9 +35,9 @@ pub fn priorities(rucksacks: &str) -> i32 {
     let (left, right) = rucksacks.split_at(rucksacks.len() /2);
     let l:Vec<char> = left.chars().collect();
     let r:Vec<char> = right.chars().collect();
-    for i in 0 .. l.len() {
-        if r.contains(&l[i]) {
-            let s: String = l[i].into();
+    for item in l {
+        if r.contains(&item) {
+            let s: String = item.into();
             return calculate_priorities(&s);
         }
     }
