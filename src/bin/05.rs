@@ -30,13 +30,13 @@ pub fn part_two(input: &str) -> Option<String> {
     Some(message)
 }
 
-pub fn rearrange9000(stack: &mut Vec<VecDeque<&str>>, qty: &str, from: &str, to: &str) {
+pub fn rearrange9000(stack: &mut [VecDeque<&str>], qty: &str, from: &str, to: &str) {
     for _i in 0.. qty.parse::<u8>().unwrap() {
         let rack = stack[from.parse::<usize>().unwrap() -1].pop_back();
         stack[to.parse::<usize>().unwrap() -1].push_back(rack.unwrap());
     }
 }
-pub fn rearrange9001(stack: &mut Vec<VecDeque<&str>>, qty: &str, from: &str, to: &str) {
+pub fn rearrange9001(stack: &mut [VecDeque<&str>], qty: &str, from: &str, to: &str) {
     let mut temp: VecDeque<&str> = VecDeque::new();
     for _i in 0.. qty.parse::<u8>().unwrap() {
         let rack = stack[from.parse::<usize>().unwrap() -1].pop_back();
@@ -52,7 +52,7 @@ pub fn get_message<'a>(stack: &'a mut Vec<VecDeque<&'a str>>) -> String {
     let mut message = String::new();
     for item in stack {
         let aa = item.pop_back();
-        if !aa.is_none() {
+        if aa.is_some() {
             message.push_str(aa.unwrap());
         }
     }

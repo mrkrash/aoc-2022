@@ -3,7 +3,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         let crane = input.get(i..(i+4)).unwrap().to_string();
         if !&crane[0..3].contains(&crane[3..4]) &&
             !&crane[0..2].contains(&crane[2..3]) &&
-            &crane[0..1] != &crane[1..2] {
+            crane[0..1] != crane[1..2] {
             println!("{:?}", crane);
             return Some((i + 4) as u32);
         }
@@ -26,7 +26,7 @@ pub fn part_two(input: &str) -> Option<u32> {
             !&crane[0..4].contains(&crane[4..5]) &&
             !&crane[0..3].contains(&crane[3..4]) &&
             !&crane[0..2].contains(&crane[2..3]) &&
-            &crane[0..1] != &crane[1..2] {
+            crane[0..1] != crane[1..2] {
             println!("{:?}", crane);
             return Some((i + 14) as u32);
         }
