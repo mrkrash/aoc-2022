@@ -1,7 +1,10 @@
+use std::collections::HashSet;
+
+type Point = (i32, i32);
+
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut h_actual_position: (u32, u32) = (500,500);
-    let mut t_actual_position: (u32, u32) = (500,500);
-    let mut visited_point: Vec<(u32, u32)> = vec![(500,500)];
+    let mut tail: Vec<Point> = vec![(500,500); 2];
+    let mut visited_point: Vec<Point> = vec![(500,500)];
 
     input
         .lines()
@@ -11,38 +14,15 @@ pub fn part_one(input: &str) -> Option<u32> {
                 let direction: String = _line[0].parse().unwrap();
                 let steps: u32 = _line[1].parse().unwrap();
 
-                println!("-----------");
-                for _i in 0 .. steps {
-                    match direction.trim() {
-                        "R" => {
-                            h_actual_position = (h_actual_position.0 + 1, h_actual_position.1);
-                            if not_surroundings(h_actual_position, t_actual_position) {
-                                t_actual_position = (t_actual_position.0 + 1, h_actual_position.1);
-                            }
-                        },
-                        "L" => {
-                            h_actual_position = (h_actual_position.0 - 1, h_actual_position.1);
-                            if not_surroundings(h_actual_position, t_actual_position) {
-                                t_actual_position = (t_actual_position.0 - 1, h_actual_position.1);
-                            }
-                        },
-                        "U" => {
-                            h_actual_position = (h_actual_position.0, h_actual_position.1 + 1);
-                            if not_surroundings(h_actual_position, t_actual_position) {
-                                t_actual_position = (h_actual_position.0, t_actual_position.1 + 1);
-                            }
-                        },
-                        "D" => {
-                            h_actual_position = (h_actual_position.0, h_actual_position.1 - 1);
-                            if not_surroundings(h_actual_position, t_actual_position) {
-                                t_actual_position = (h_actual_position.0, t_actual_position.1 - 1);
-                            }
-                        },
-                        _ => {}
+                for _ in 0 .. steps {
+                    moves(direction.trim(), &mut tail[0]);
+
+                    for i in 1 .. tail.len() {
+                        follow(tail[i - 1], &mut tail[i]);
                     }
-                    println!("{} # H({},{}) T({},{})", line, h_actual_position.0, h_actual_position.1, t_actual_position.0, t_actual_position.1);
-                    if !visited_point.contains(&t_actual_position) {
-                        visited_point.push(t_actual_position);
+
+                    if !visited_point.contains(&tail.last().unwrap()) {
+                        visited_point.push(*tail.last().unwrap());
                     }
                 }
             }
@@ -52,23 +32,48 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    None
+    let mut tail: Vec<Point> = vec![(500,500); 10];
+    let mut visited_point = HashSet::from([(500, 500)]);
+
+    input
+        .lines()
+        .for_each(
+            |line| {
+                let _line = line.split(" ").collect::<Vec<&str>>();
+                let direction: String = _line[0].parse().unwrap();
+                let steps: u32 = _line[1].parse().unwrap();
+
+                for _ in 0 .. steps {
+                    moves(direction.trim(), &mut tail[0]);
+
+                    for i in 1 .. tail.len() {
+                        follow(tail[i - 1], &mut tail[i]);
+                    }
+
+                    visited_point.insert(*tail.last().unwrap());
+                }
+            }
+        );
+
+    Some(visited_point.len() as u32)
 }
 
-fn not_surroundings(h_position:(u32, u32), t_position:(u32, u32)) -> bool {
-    if h_position.0.abs_diff(t_position.0) == 1_u32 && h_position.1.abs_diff(t_position.1) == 1_u32 {
-        return false;
+fn moves(direction: &str, head: &mut Point) {
+    match direction {
+        "R" => head.0 += 1,
+        "L" => head.0 -= 1,
+        "D" => head.1 += 1,
+        "U" => head.1 -= 1,
+        _ => panic!("{direction}"),
     }
-    if h_position.0.abs_diff(t_position.0) == 1_u32 && h_position.1.abs_diff(t_position.1) == 0_u32 {
-        return false;
+}
+
+fn follow(leader: Point, follower: &mut Point) {
+    let delta = (leader.0 - follower.0, leader.1 - follower.1);
+    if delta.0.abs() == 2 || delta.1.abs() == 2 {
+        follower.0 += delta.0.signum();
+        follower.1 += delta.1.signum();
     }
-    if h_position.0.abs_diff(t_position.0) == 0_u32 && h_position.1.abs_diff(t_position.1) == 1_u32 {
-        return false;
-    }
-    if h_position.0.abs_diff(t_position.0) == 0_u32 && h_position.1.abs_diff(t_position.1) == 0_u32 {
-        return false;
-    }
-    return true;
 }
 
 fn main() {
@@ -84,12 +89,12 @@ mod tests {
     #[test]
     fn test_part_one() {
         let input = advent_of_code::read_file("examples", 9);
-        assert_eq!(part_one(&input), Some(13));
+        assert_eq!(part_one(&input), Some(88));
     }
 
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 9);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(36));
     }
 }
